@@ -1,9 +1,9 @@
 ## Openidcpy
-A package that implements the Authorization Flow client for the OpenID Connect relying party. The package cane be used to fetch OpenID Connect tokens using Authorization Flow and validate them using JWKS. The client has been implemented with KeyCloak as the OpenID Connect Authorizaiton Provider.
+A package that implements the Authorization Flow client for the OpenID Connect relying party. The package can be used to fetch OpenID Connect tokens using Authorization Flow and validate them using JWKS. The client has been implemented with KeyCloak as the OpenID Connect Authorization Provider.
 
 #### Usage
 
-The only class of use if `OidcClient` which can be imported in code as:
+The only class of use is `OidcClient` which can be imported in code as:
 
 ```python
 from openidcpy.client import OidcClient
