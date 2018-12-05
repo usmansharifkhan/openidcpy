@@ -9,10 +9,11 @@ from datetime import datetime
 
 
 class OidcClient(object):
-  def __init__(self, discovery_uri, client_id, client_secret=None):
+  def __init__(self, discovery_uri, client_id, client_secret=None, verify=False):
     self.discovery_uri = discovery_uri
     self.client_id = client_id
     self.client_secret = client_secret
+    self.verify = verify
 
   def _discover(self):
     if not hasattr(self, 'well_known'):
@@ -29,7 +30,7 @@ class OidcClient(object):
   def _get_url(self, url):
     resp = None
     try:
-      resp = requests.get(url, verify=False)
+      resp = requests.get(url, verify=self.verify)
       if resp.status_code != 200:
         raise CommunicationError(
             'Could not connect to discovery endpoint, {}, Code: {}'.format(
@@ -78,7 +79,7 @@ class OidcClient(object):
     resp = None
     try:
       resp = requests.post(self.token_uri, data=req_params, headers=headers,
-                           verify=False)
+                           verify=self.verify)
       if resp.status_code != 200:
         raise AuthenticationError(resp.text)
       return resp.json()

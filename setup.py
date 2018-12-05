@@ -9,7 +9,7 @@ setup(
     author_email='usman.shahid@intechww.com',
     tests_require=['mock==2.0.0'],
     install_requires=[
-      'requests==2.19.1',
+      'requests==2.20.0',
       'jwcrypto==0.6.0',
 
     ]
