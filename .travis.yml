@@ -1,0 +1,6 @@
+language: python
+python:
+  - 2.7
+script:
+  - pip install --upgrade .
+  - python -m unittest discover
