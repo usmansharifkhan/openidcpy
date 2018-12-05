@@ -39,7 +39,7 @@ class OidcClient(object):
       if resp is not None:
         resp.close()
 
-  def get_auth_url(self, response_type, redirect_uri, scopes, state):
+  def create_auth_url(self, response_type, redirect_uri, scopes, state):
     self._discover()
     query_params = {
       'response_type': response_type,

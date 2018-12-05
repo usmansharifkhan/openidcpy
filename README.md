@@ -25,7 +25,7 @@ response_type = 'code'  # Always `code` for Authorization Flow
 redirect_uri = 'uri where the relying party is running'
 scopes = ['openid', 'email', 'profile'] # Array of requested scopes
 state = 'Some random generated value that is returned in the redirect, prevents csrf'
-url = client.get_auth_url(response_type=response_type, redirect_uri=redirect_uri, scopes=scopes, state=state)
+url = client.create_auth_url(response_type=response_type, redirect_uri=redirect_uri, scopes=scopes, state=state)
 ```
 
 You'll need to redirect your application to the above url. The redirection will cause the auth server's login page to be displayed. Once the user logs in, the browser is redirected to the `redirect_uri` passed into the above call with an authorization code. You'll need to exchange the code with the JWT token as follows:
@@ -48,6 +48,12 @@ claims = client.validate_jwt(id_token)
 ```
 The method validates the signature of the token, the audience (whether the token was intended for you) and the expiration of the token.
 The `claims` dictionary will contain the decoded contents of the token. Based on the scopes you specified, it can contain the `email` or `preferred_username`.
+
+#### External Dependencies
+
+* requests (2.19.1)
+* jwcrypto (0.6.0)
+
 
 #### Contributions
 

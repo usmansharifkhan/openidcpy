@@ -60,7 +60,7 @@ class TestOidcClient(unittest.TestCase):
         ordered(client.certs[jwks['keys'][0]['kid']]) == ordered(
             jwks['keys'][0]))
 
-  def test_get_auth_url(self):
+  def test_create_auth_url(self):
     def get(url, verify):
       response = Response()
       response.status_code = 200
@@ -77,8 +77,8 @@ class TestOidcClient(unittest.TestCase):
     client = OidcClient(
         discovery_uri='http://localhost:8080/auth/realms/teamplay/.well-known/openid-configuration',
         client_id='asdf')
-    url = client.get_auth_url('code', 'http://yourwebsite.com/redirect',
-                              ['abc', 'def'], 'wyoming')
+    url = client.create_auth_url('code', 'http://yourwebsite.com/redirect',
+                                 ['abc', 'def'], 'wyoming')
     self.assertTrue(
         'http://localhost:8080/auth/realms/teamplay/protocol/openid-connect/auth' in url)
     self.assertTrue('scope=abc+def' in url)
@@ -105,7 +105,7 @@ class TestOidcClient(unittest.TestCase):
     client = OidcClient(
         discovery_uri='http://localhost:8080/auth/realms/teamplay/.well-known/openid-configuration',
         client_id='asdf')
-    url = client.get_auth_url('code', 'http://yourwebsite.com/redirect',
+    url = client.create_auth_url('code', 'http://yourwebsite.com/redirect',
                               'abc', 'wyoming')
     self.assertTrue(
         'http://localhost:8080/auth/realms/teamplay/protocol/openid-connect/auth' in url)
