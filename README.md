@@ -51,7 +51,7 @@ The `claims` dictionary will contain the decoded contents of the token. Based on
 
 #### External Dependencies
 
-* requests (2.19.1)
+* requests (2.20.0)
 * jwcrypto (0.6.0)
 
 
