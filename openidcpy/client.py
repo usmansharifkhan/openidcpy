@@ -4,12 +4,14 @@ import urllib
 import urlparse
 
 import requests
-from jwcrypto import jwt, jwk
+
 from datetime import datetime
+from jose import jwt
 
 
 class OidcClient(object):
-  def __init__(self, discovery_uri, client_id, client_secret=None, verify=False):
+  def __init__(self, discovery_uri, client_id, client_secret=None,
+      verify=False):
     self.discovery_uri = discovery_uri
     self.client_id = client_id
     self.client_secret = client_secret
@@ -33,8 +35,8 @@ class OidcClient(object):
       resp = requests.get(url, verify=self.verify)
       if resp.status_code != 200:
         raise CommunicationError(
-            'Could not connect to discovery endpoint, {}, Code: {}'.format(
-                self.discovery_uri, str(resp.status_code)))
+            'Could not connect to endpoint, {}, Code: {}'.format(url, str(
+                resp.status_code)))
       return resp.json()
     finally:
       if resp is not None:
@@ -101,19 +103,12 @@ class OidcClient(object):
     if key_id not in self.certs:
       raise ValidationError('The token is signed by an unknown key')
     cert = self.certs[key_id]
-    jwkey = jwk.JWK(**cert)
-    signed_token = _new_jwt(key=jwkey, token=token)
-    claims = json.loads(signed_token.claims)
+    claims = jwt.decode(token=token, key=cert, audience=self.client_id)
     if 'exp' not in claims:
       raise ValidationError('The token does not contain have expiration')
     expiration_date = datetime.fromtimestamp(claims['exp'])
     if expiration_date < datetime.now():
       raise ValidationError('The token has expired')
-    if 'aud' not in claims:
-      raise ValidationError('The token does not have a specified audience')
-    if claims['aud'] != self.client_id:
-      raise ValidationError('The provided token is not issued for this client')
-
     return claims
 
   def get_logout_endpoint(self, redirect=None):
@@ -137,10 +132,6 @@ def _get_scope_string(scopes):
   if type(scopes) in [list, set, tuple]:
     return " ".join(str(i) for i in scopes)
   return scopes
-
-
-def _new_jwt(key, token):
-  return jwt.JWT(key=key, jwt=token)
 
 
 def _add_query_params_to_url(url, params):
