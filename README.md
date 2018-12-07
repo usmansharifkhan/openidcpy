@@ -52,7 +52,7 @@ The `claims` dictionary will contain the decoded contents of the token. Based on
 #### External Dependencies
 
 * requests (2.20.0)
-* jwcrypto (0.6.0)
+* python-jose (3.0.1)
 
 
 #### Contributions

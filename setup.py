@@ -10,7 +10,7 @@ setup(
     tests_require=['mock==2.0.0'],
     install_requires=[
       'requests==2.20.0',
-      'jwcrypto==0.6.0',
+      'python-jose==3.0.1'
 
     ]
 )

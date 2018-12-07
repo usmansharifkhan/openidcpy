@@ -7,7 +7,7 @@ import unittest
 import requests
 from mock import Mock
 from requests import Response
-from openidcpy import client as client_file
+from jose import jwt
 
 from openidcpy.client import OidcClient
 
@@ -106,7 +106,7 @@ class TestOidcClient(unittest.TestCase):
         discovery_uri='http://localhost:8080/auth/realms/teamplay/.well-known/openid-configuration',
         client_id='asdf')
     url = client.create_auth_url('code', 'http://yourwebsite.com/redirect',
-                              'abc', 'wyoming')
+                                 'abc', 'wyoming')
     self.assertTrue(
         'http://localhost:8080/auth/realms/teamplay/protocol/openid-connect/auth' in url)
     self.assertTrue('scope=abc' in url)
@@ -196,17 +196,12 @@ class TestOidcClient(unittest.TestCase):
                                   base64.b64encode(json.dumps(test_payload)),
                                   'my-signature')
 
-    def get_jwt(key, token):
+    def decode_jwt(token, key, audience):
+      self.assertEqual(audience, test_payload['aud'])
       self.assertEqual(token, token_str)
+      return json.loads(base64.b64decode(token.split('.')[1]))
 
-      class TestTokenBody:
-        claims = None
-
-      token_body = TestTokenBody()
-      token_body.claims = json.dumps(test_payload)
-      return token_body
-
-    client_file._new_jwt = get_jwt
+    jwt.decode = decode_jwt
     claims = client.validate_jwt(token_str)
 
     self.assertTrue(ordered(claims) == ordered(test_payload))
