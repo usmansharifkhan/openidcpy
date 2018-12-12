@@ -89,7 +89,7 @@ class OidcClient(object):
       if resp is not None:
         resp.close()
 
-  def validate_jwt(self, token):
+  def validate_jwt(self, token, **kwargs):
     self._discover()
     if type(token) not in [str, unicode]:
       raise ValidationError('Token should be a string type')
@@ -103,13 +103,7 @@ class OidcClient(object):
     if key_id not in self.certs:
       raise ValidationError('The token is signed by an unknown key')
     cert = self.certs[key_id]
-    claims = jwt.decode(token=token, key=cert, audience=self.client_id)
-    if 'exp' not in claims:
-      raise ValidationError('The token does not contain have expiration')
-    expiration_date = datetime.fromtimestamp(claims['exp'])
-    if expiration_date < datetime.now():
-      raise ValidationError('The token has expired')
-    return claims
+    return jwt.decode(token=token, key=cert, **kwargs)
 
   def get_logout_endpoint(self, redirect=None):
     self._discover()
