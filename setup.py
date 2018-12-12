@@ -7,7 +7,7 @@ with open(path.join(this_directory, 'README.md')) as f:
 
 setup(
     name="openidcpy",
-    version='0.3',
+    version='0.4',
     description='A package that implements the Relying Party Authorization Code Flow for OpenId Connect',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -15,7 +15,7 @@ setup(
     author='Usman Shahid',
     author_email='usman.shahid@intechww.com',
     url='https://github.com/intech-iiot/openidcpy',
-    py_modules=['openidcpy'],
+    packages=['openidcpy'],
     tests_require=['mock==2.0.0'],
     install_requires=[
       'requests==2.20.0',
