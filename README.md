@@ -6,7 +6,7 @@ A package that implements the Authorization Flow client for the OpenID Connect r
 The only class of use is `OidcClient` which can be imported in code as:
 
 ```python
-from openidcpy.client import OidcClient
+from openidcpy import OidcClient
 ```
 
 You'd need to initialize this client as follows:
