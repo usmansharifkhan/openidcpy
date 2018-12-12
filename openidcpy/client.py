@@ -103,7 +103,7 @@ class OidcClient(object):
     if key_id not in self.certs:
       raise ValidationError('The token is signed by an unknown key')
     cert = self.certs[key_id]
-    claims = jwt.decode(token=token, key=cert, audience=self.client_id)
+    claims = jwt.decode(token=token, key=cert)
     if 'exp' not in claims:
       raise ValidationError('The token does not contain have expiration')
     expiration_date = datetime.fromtimestamp(claims['exp'])
