@@ -1,1 +1,1 @@
-from client import OidcClient
+from .client import OidcClient
