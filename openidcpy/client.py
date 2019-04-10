@@ -91,7 +91,7 @@ class OidcClient(object):
 
   def validate_jwt(self, token, **kwargs):
     self._discover()
-    if type(token) not in [str, bytes]:
+    if type(token) is not str:
       raise ValidationError('Token should be a string type')
     split = token.split('.')
     if len(split) != 3:
