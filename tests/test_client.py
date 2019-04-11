@@ -192,8 +192,8 @@ class TestOidcClient(unittest.TestCase):
       'username': 'bushido'
     }
 
-    token_str = '{}.{}.{}'.format(base64.b64encode(json.dumps(test_header)),
-                                  base64.b64encode(json.dumps(test_payload)),
+    token_str = '{}.{}.{}'.format(base64.b64encode(json.dumps(test_header).encode("utf-8")).decode("utf-8"),
+                                  base64.b64encode(json.dumps(test_payload).encode("utf-8")).decode("utf-8"),
                                   'my-signature')
 
     def decode_jwt(token, key, audience):

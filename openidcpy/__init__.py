@@ -1,1 +1,1 @@
-from client import OidcClient
+from openidcpy.client import OidcClient
