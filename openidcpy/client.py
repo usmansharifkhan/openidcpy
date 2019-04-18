@@ -1,7 +1,7 @@
 import base64
 import json
 import urllib
-import urlparse
+from urllib import parse
 
 import requests
 
@@ -55,7 +55,7 @@ class OidcClient(object):
 
   def get_tokens_from_code(self, url, redirect_uri, scopes, state):
     self._discover()
-    params = dict(urlparse.parse_qsl(urlparse.urlparse(url).query))
+    params = dict(parse.parse_qsl(parse.urlparse(url).query))
     if 'code' not in params:
       raise AuthenticationError('Authorization code not found in response')
     if state is not None:
@@ -74,7 +74,7 @@ class OidcClient(object):
 
     headers = {
       'Authorization': 'Basic ' + base64.b64encode(
-          '{}:{}'.format(self.client_id, self.client_secret)),
+        '{}:{}'.format(self.client_id, self.client_secret).encode("utf-8")).decode("utf-8"),
       'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
       'Accept': 'application/json'
     }
@@ -91,19 +91,21 @@ class OidcClient(object):
 
   def validate_jwt(self, token, **kwargs):
     self._discover()
-    if type(token) not in [str, unicode]:
+    if type(token) is not str:
       raise ValidationError('Token should be a string type')
     split = token.split('.')
     if len(split) != 3:
       raise ValidationError('Invalid token provided for validation')
     # Correct the padding
-    split[0] += "=" * ((4 - len(split[0]) % 4) % 4)
-    key_spec = json.loads(base64.b64decode(split[0]))
+    split[1] += '=' * (-len(split[1]) % 4)
+    split[0] += '=' * (-len(split[0]) % 4)
+    json_payload = json.loads(base64.b64decode(split[1].encode("utf-8")))
+    key_spec = json.loads(base64.b64decode(split[0].encode("utf-8")))
     key_id = key_spec['kid']
     if key_id not in self.certs:
       raise ValidationError('The token is signed by an unknown key')
     cert = self.certs[key_id]
-    return jwt.decode(token=token, key=cert, **kwargs)
+    return jwt.decode(token=token, key=cert, audience=json_payload['azp'], **kwargs)
 
   def get_logout_endpoint(self, redirect=None):
     self._discover()
@@ -129,11 +131,11 @@ def _get_scope_string(scopes):
 
 
 def _add_query_params_to_url(url, params):
-  scheme, location, path, url_params, query, fragment = urlparse.urlparse(url)
-  query_string = urlparse.parse_qsl(query, keep_blank_values=True)
+  scheme, location, path, url_params, query, fragment = parse.urlparse(url)
+  query_string = parse.parse_qsl(query, keep_blank_values=True)
   query_string.extend(params.items())
-  query = urllib.urlencode(query_string)
-  return urlparse.urlunparse(
+  query = parse.urlencode(query_string)
+  return parse.urlunparse(
       (scheme, location, path, url_params, query, fragment))
 
 
