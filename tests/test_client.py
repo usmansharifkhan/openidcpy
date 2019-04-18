@@ -185,6 +185,7 @@ class TestOidcClient(unittest.TestCase):
       'iss': 'keycloak',
       'sub': 'testing',
       'aud': 'unittest',
+      'azp': 'unittest',
       'iat': int(time.time()),
       'nbf': int(time.time()),
       'exp': int(time.time()) + 60,

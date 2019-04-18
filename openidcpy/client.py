@@ -97,14 +97,15 @@ class OidcClient(object):
     if len(split) != 3:
       raise ValidationError('Invalid token provided for validation')
     # Correct the padding
-    split[0] += "=" * ((4 - len(split[0]) % 4) % 4)
+    split[1] += '=' * (-len(split[1]) % 4)
+    split[0] += '=' * (-len(split[0]) % 4)
     json_payload = json.loads(base64.b64decode(split[1].encode("utf-8")))
     key_spec = json.loads(base64.b64decode(split[0].encode("utf-8")))
     key_id = key_spec['kid']
     if key_id not in self.certs:
       raise ValidationError('The token is signed by an unknown key')
     cert = self.certs[key_id]
-    return jwt.decode(token=token, key=cert, audience=json_payload['aud'], **kwargs)
+    return jwt.decode(token=token, key=cert, audience=json_payload['azp'], **kwargs)
 
   def get_logout_endpoint(self, redirect=None):
     self._discover()
